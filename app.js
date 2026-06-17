@@ -1212,11 +1212,7 @@ document.getElementById("detailTelegram").addEventListener("click", () => {
         msg += `💵 Total: ${formatPrice(selectedVariant.price * detailQty)}\n`;
     }
     
-    // Copier le message et ouvrir Telegram
-    navigator.clipboard.writeText(msg).then(() => {
-        showToast("Message copié! 📋");
-    });
-    window.open(`${TELEGRAM_CHANNEL}?text=${encodeURIComponent(msg)}`, "_blank");
+    window.open(`https://t.me/lineasfarmx?text=${encodeURIComponent(msg)}`, "_blank");
 });
 
 // Basculer entre image et vidéo
@@ -1372,11 +1368,7 @@ document.getElementById("checkoutBtn").addEventListener("click", () => {
     msg += `💰 Total: ${formatPrice(total)}\n`;
     msg += `\nMerci pour votre commande! 🙏`;
     
-    // Copier le message et ouvrir Telegram
-    navigator.clipboard.writeText(msg).then(() => {
-        showToast("Commande copiée! 📋");
-    });
-    window.open(`${TELEGRAM_CHANNEL}?text=${encodeURIComponent(msg)}`, "_blank");
+    window.open(`https://t.me/lineasfarmx?text=${encodeURIComponent(msg)}`, "_blank");
 });
 
 document.addEventListener("keydown", (e) => {
