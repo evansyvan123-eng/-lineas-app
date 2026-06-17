@@ -124,11 +124,51 @@
                 <strong id="cartTotalPrice">0,00 €</strong>
             </div>
             <button class="checkout-btn" id="checkoutBtn">
-                <i class="fab fa-telegram"></i> Commander via Telegram
+                <i class="fas fa-shopping-check"></i> Valider le panier
             </button>
         </div>
     </aside>
     <div class="cart-overlay" id="cartOverlay"></div>
+
+    <!-- Formulaire de livraison -->
+    <div class="overlay" id="deliveryOverlay" hidden>
+        <div class="delivery-form" role="dialog" aria-labelledby="deliveryTitle">
+            <button class="detail-close" id="closeDelivery" aria-label="Fermer">
+                <i class="fas fa-times"></i>
+            </button>
+            <h2 id="deliveryTitle" class="delivery-title">Informations de livraison</h2>
+            
+            <form id="deliveryForm">
+                <div class="form-group">
+                    <label for="deliveryAddress">Adresse de livraison</label>
+                    <input type="text" id="deliveryAddress" name="address" placeholder="Ex: 123 Rue de la Paix" required />
+                </div>
+
+                <div class="form-group">
+                    <label for="deliveryPostal">Code postal</label>
+                    <input type="text" id="deliveryPostal" name="postal" placeholder="Ex: 75001" required />
+                </div>
+
+                <div class="form-group">
+                    <label for="deliveryPhone">Numéro de téléphone</label>
+                    <input type="tel" id="deliveryPhone" name="phone" placeholder="Ex: +33 6 12 34 56 78" required />
+                </div>
+
+                <div class="form-group">
+                    <label for="deliveryMethod">Mode de livraison</label>
+                    <select id="deliveryMethod" name="method" required>
+                        <option value="">-- Choisir une option --</option>
+                        <option value="postal">Envoi postal</option>
+                        <option value="dm">Livraison personnalisée (à discuter en DM)</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="btn-submit-delivery">
+                    <i class="fab fa-telegram"></i> Valider la commande
+                </button>
+            </form>
+        </div>
+    </div>
 
     <button class="floating-cart" id="floatingCart" aria-label="Panier">
         <i class="fas fa-shopping-bag"></i>

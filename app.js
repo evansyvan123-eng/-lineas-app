@@ -1354,26 +1354,87 @@ document.getElementById("checkoutBtn").addEventListener("click", () => {
         return;
     }
     
-    let msg = "🛒 Ma commande LINEAS FARM:\n\n";
-    let total = 0;
+    closeCart();
+    showDeliveryForm();
+});
+
+// ===== FORMULAIRE DE LIVRAISON =====
+const deliveryOverlay = document.getElementById("deliveryOverlay");
+const deliveryForm = document.getElementById("deliveryForm");
+
+function showDeliveryForm() {
+    deliveryOverlay.hidden = false;
+    document.body.style.overflow = "hidden";
+}
+
+function closeDeliveryForm() {
+    deliveryOverlay.hidden = true;
+    document.body.style.overflow = "";
+    deliveryForm.reset();
+}
+
+document.getElementById("closeDelivery").addEventListener("click", closeDeliveryForm);
+deliveryOverlay.addEventListener("click", (e) => {
+    if (e.target === deliveryOverlay) closeDeliveryForm();
+});
+
+deliveryForm.addEventListener("submit", (e) => {
+    e.preventDefault();
     
+    const address = document.getElementById("deliveryAddress").value.trim();
+    const postal = document.getElementById("deliveryPostal").value.trim();
+    const phone = document.getElementById("deliveryPhone").value.trim();
+    const method = document.getElementById("deliveryMethod").value;
+    
+    if (!address || !postal || !phone || !method) {
+        showToast("Veuillez remplir tous les champs");
+        return;
+    }
+    
+    let msg = "🛒 NOUVELLE COMMANDE LINEAS FARM\n\n";
+    msg += "══════════════════════════════\n";
+    msg += "📋 PRODUITS:\n";
+    msg += "══════════════════════════════\n\n";
+    
+    let total = 0;
     panier.forEach((item) => {
         const subtotal = item.price * item.quantite;
         total += subtotal;
         msg += `📦 ${item.name}\n`;
-        msg += `   ${item.weight} × ${item.quantite} = ${formatPrice(subtotal)}\n`;
+        msg += `   Marque: ${item.brand}\n`;
+        msg += `   Grammage: ${item.weight}\n`;
+        msg += `   Quantité: ${item.quantite} × ${formatPrice(item.price)}\n`;
+        msg += `   Sous-total: ${formatPrice(subtotal)}\n\n`;
     });
     
-    msg += `\n${'─'.repeat(30)}\n`;
-    msg += `💰 Total: ${formatPrice(total)}\n`;
-    msg += `\nMerci pour votre commande! 🙏`;
+    msg += "══════════════════════════════\n";
+    msg += "💰 RÉSUMÉ:\n";
+    msg += "══════════════════════════════\n\n";
+    msg += `Total: ${formatPrice(total)}\n\n`;
+    
+    msg += "📍 INFORMATIONS DE LIVRAISON:\n";
+    msg += "══════════════════════════════\n\n";
+    msg += `Adresse: ${address}\n`;
+    msg += `Code postal: ${postal}\n`;
+    msg += `Téléphone: ${phone}\n`;
+    msg += `Mode de livraison: ${method === 'postal' ? '📬 Envoi postal' : '💬 Livraison personnalisée'}\n\n`;
+    
+    msg += "════════════════════════════════\n";
+    msg += "Merci pour votre commande! 🙏\n";
+    
+    closeDeliveryForm();
+    panier = [];
+    updateCartUI();
+    saveCart();
     
     window.open(`https://t.me/lineasfarmx?text=${encodeURIComponent(msg)}`, "_blank");
+    showToast("Commande envoyée! ✅");
 });
 
 document.addEventListener("keydown", (e) => {
     if (e.key === "Escape") {
-        if (!productOverlay.hidden) closeProductDetail();
+        if (!deliveryOverlay.hidden) closeDeliveryForm();
+        else if (!productOverlay.hidden) closeProductDetail();
         else closeCart();
     }
 });
