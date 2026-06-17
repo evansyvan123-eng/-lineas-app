@@ -1212,7 +1212,13 @@ document.getElementById("detailTelegram").addEventListener("click", () => {
         msg += `💵 Total: ${formatPrice(selectedVariant.price * detailQty)}\n`;
     }
     
-    window.open(`${TELEGRAM_CHANNEL}?text=${encodeURIComponent(msg)}`, "_blank");
+    // Copier le message dans le presse-papiers et ouvrir Instagram
+    navigator.clipboard.writeText(msg).then(() => {
+        showToast("Message copié! 📋");
+        window.open("https://instagram.com/lineasfarmx", "_blank");
+    }).catch(() => {
+        showToast("Oups, erreur de copie");
+    });
 });
 
 // Basculer entre image et vidéo
@@ -1368,7 +1374,13 @@ document.getElementById("checkoutBtn").addEventListener("click", () => {
     msg += `💰 Total: ${formatPrice(total)}\n`;
     msg += `\nMerci pour votre commande! 🙏`;
     
-    window.open(`${TELEGRAM_CHANNEL}?text=${encodeURIComponent(msg)}`, "_blank");
+    // Copier le message dans le presse-papiers et ouvrir Instagram
+    navigator.clipboard.writeText(msg).then(() => {
+        showToast("Commande copiée! 📋");
+        window.open("https://instagram.com/lineasfarmx", "_blank");
+    }).catch(() => {
+        showToast("Oups, erreur de copie");
+    });
 });
 
 document.addEventListener("keydown", (e) => {
