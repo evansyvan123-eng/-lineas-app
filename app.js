@@ -1199,7 +1199,20 @@ document.getElementById("detailAddCart").addEventListener("click", () => {
 });
 
 document.getElementById("detailTelegram").addEventListener("click", () => {
-    window.open(TELEGRAM_CHANNEL, "_blank");
+    if (!currentProduct) return;
+    
+    let msg = "🛍️ Je souhaite commander:\n\n";
+    msg += `📦 Produit: ${currentProduct.name}\n`;
+    msg += `🏷️ Marque: ${currentProduct.brand}\n`;
+    
+    if (selectedVariant) {
+        msg += `⚖️ Grammage: ${selectedVariant.weight}\n`;
+        msg += `💰 Prix: ${formatPrice(selectedVariant.price)}\n`;
+        msg += `📊 Quantité: ${detailQty}\n`;
+        msg += `💵 Total: ${formatPrice(selectedVariant.price * detailQty)}\n`;
+    }
+    
+    window.open(`${TELEGRAM_CHANNEL}?text=${encodeURIComponent(msg)}`, "_blank");
 });
 
 // Basculer entre image et vidéo
@@ -1336,7 +1349,26 @@ document.getElementById("closeCart").addEventListener("click", closeCart);
 cartOverlay.addEventListener("click", closeCart);
 
 document.getElementById("checkoutBtn").addEventListener("click", () => {
-    window.open(TELEGRAM_CHANNEL, "_blank");
+    if (panier.length === 0) {
+        showToast("Panier vide");
+        return;
+    }
+    
+    let msg = "🛒 Ma commande LINEAS FARM:\n\n";
+    let total = 0;
+    
+    panier.forEach((item) => {
+        const subtotal = item.price * item.quantite;
+        total += subtotal;
+        msg += `📦 ${item.name}\n`;
+        msg += `   ${item.weight} × ${item.quantite} = ${formatPrice(subtotal)}\n`;
+    });
+    
+    msg += `\n${'─'.repeat(30)}\n`;
+    msg += `💰 Total: ${formatPrice(total)}\n`;
+    msg += `\nMerci pour votre commande! 🙏`;
+    
+    window.open(`${TELEGRAM_CHANNEL}?text=${encodeURIComponent(msg)}`, "_blank");
 });
 
 document.addEventListener("keydown", (e) => {
