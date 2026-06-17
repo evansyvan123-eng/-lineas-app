@@ -1,8 +1,9 @@
+// @ts-nocheck
 // ============================================================
 // PRODUITS — modifiez ici votre catalogue
 
 // ============================================================
-export const PRODUITS = [
+const PRODUITS = [
     // SUPERDOPE
     {
         id: 1,
@@ -985,7 +986,8 @@ function showToast(msg) {
     toast.textContent = msg;
     toast.classList.add("show");
     clearTimeout(showToast._t);
-    showToast._t = setTimeout(() => toast.classList.remove("show"), 2500);
+    showToast._t = setTimeout(() => toast.classList.remove("show"), 2000);
+    if (navigator.vibrate) navigator.vibrate(50);
 }
 
 function getFilteredProducts() {
@@ -1167,6 +1169,7 @@ function closeProductDetail() {
     productOverlay.hidden = true;
     document.body.style.overflow = "";
     currentProduct = null;
+    showToast("Produit ferme");
 }
 
 document.getElementById("closeProduct").addEventListener("click", closeProductDetail);
@@ -1201,15 +1204,15 @@ document.getElementById("detailAddCart").addEventListener("click", () => {
 document.getElementById("detailTelegram").addEventListener("click", () => {
     if (!currentProduct) return;
     
-    let msg = "🛍️ Je souhaite commander:\n\n";
-    msg += `📦 Produit: ${currentProduct.name}\n`;
-    msg += `🏷️ Marque: ${currentProduct.brand}\n`;
+    let msg = "Je souhaite commander:\n\n";
+    msg += `Produit: ${currentProduct.name}\n`;
+    msg += `Marque: ${currentProduct.brand}\n`;
     
     if (selectedVariant) {
-        msg += `⚖️ Grammage: ${selectedVariant.weight}\n`;
-        msg += `💰 Prix: ${formatPrice(selectedVariant.price)}\n`;
-        msg += `📊 Quantité: ${detailQty}\n`;
-        msg += `💵 Total: ${formatPrice(selectedVariant.price * detailQty)}\n`;
+        msg += `Grammage: ${selectedVariant.weight}\n`;
+        msg += `Prix: ${formatPrice(selectedVariant.price)}\n`;
+        msg += `Quantite: ${detailQty}\n`;
+        msg += `Total: ${formatPrice(selectedVariant.price * detailQty)}\n`;
     }
     
     window.open(`https://t.me/lineasfarmx?text=${encodeURIComponent(msg)}`, "_blank");
@@ -1258,8 +1261,9 @@ function ajouterAuPanier(product, weight, price, qty = 1) {
 
     updateCartUI();
     saveCart();
-    showToast(`${product.name} ajouté au panier`);
+    showToast(`Produit ajoute au panier!`);
     floatingBadge.style.transform = "scale(1.4)";
+    if (navigator.vibrate) navigator.vibrate(100);
     setTimeout(() => (floatingBadge.style.transform = ""), 300);
 }
 
@@ -1272,29 +1276,29 @@ function updateCartUI() {
     cartTotalPrice.textContent = formatPrice(totalPrice);
 
     if (panier.length === 0) {
-        cartItems.innerHTML = `<p class="empty-cart">Votre panier est vide</p>`;
+        cartItems.innerHTML = "<p class=\"empty-cart\">Votre panier est vide</p>";
         return;
     }
 
-    cartItems.innerHTML = panier
-        .map(
-            (item, index) => `
+    let html = "";
+    panier.forEach((item, index) => {
+        html += `
         <div class="cart-item">
             <img src="${item.image}" alt="${item.name}" />
             <div class="cart-item-details">
                 <div class="cart-item-name">${item.name}</div>
-                <div class="cart-item-variant">${item.weight} · ${item.brand}</div>
+                <div class="cart-item-variant">${item.weight} - ${item.brand}</div>
                 <div class="cart-item-price">${formatPrice(item.price * item.quantite)}</div>
             </div>
             <div class="cart-item-actions">
-                <button type="button" data-index="${index}" data-delta="-1">−</button>
+                <button type="button" data-index="${index}" data-delta="-1">-</button>
                 <span>${item.quantite}</span>
                 <button type="button" data-index="${index}" data-delta="1">+</button>
                 <button type="button" class="cart-remove" data-index="${index}"><i class="fas fa-trash"></i></button>
             </div>
-        </div>`
-        )
-        .join("");
+        </div>`;
+    });
+    cartItems.innerHTML = html;
 
     cartItems.querySelectorAll("[data-delta]").forEach((btn) => {
         btn.addEventListener("click", () => modifierQuantite(+btn.dataset.index, +btn.dataset.delta));
@@ -1308,16 +1312,26 @@ function modifierQuantite(index, delta) {
     const item = panier[index];
     if (!item) return;
     const q = item.quantite + delta;
-    if (q <= 0) panier.splice(index, 1);
-    else item.quantite = q;
-    updateCartUI();
-    saveCart();
+    if (q <= 0) {
+        const name = item.name;
+        panier.splice(index, 1);
+        updateCartUI();
+        saveCart();
+        showToast(`X ${name} supprime`);
+    } else {
+        item.quantite = q;
+        updateCartUI();
+        saveCart();
+        showToast(`Qte: ${q}`);
+    }
 }
 
 function supprimerDuPanier(index) {
+    const name = panier[index].name;
     panier.splice(index, 1);
     updateCartUI();
     saveCart();
+    showToast(`Supprime: ${name}`);
 }
 
 function saveCart() {
@@ -1336,6 +1350,7 @@ function loadCart() {
 function openCart() {
     cartSidebar.classList.add("open");
     cartOverlay.classList.add("open");
+    showToast(`Panier - ${panier.reduce((s, i) => s + i.quantite, 0)} article(s)`);
 }
 
 function closeCart() {
@@ -1391,36 +1406,36 @@ deliveryForm.addEventListener("submit", (e) => {
         return;
     }
     
-    let msg = "🛒 NOUVELLE COMMANDE LINEAS FARM\n\n";
-    msg += "══════════════════════════════\n";
-    msg += "📋 PRODUITS:\n";
-    msg += "══════════════════════════════\n\n";
+    let msg = "NOUVELLE COMMANDE LINEAS FARM\n\n";
+    msg += "====================\n";
+    msg += "PRODUITS:\n";
+    msg += "====================\n\n";
     
     let total = 0;
     panier.forEach((item) => {
         const subtotal = item.price * item.quantite;
         total += subtotal;
-        msg += `📦 ${item.name}\n`;
+        msg += `${item.name}\n`;
         msg += `   Marque: ${item.brand}\n`;
         msg += `   Grammage: ${item.weight}\n`;
-        msg += `   Quantité: ${item.quantite} × ${formatPrice(item.price)}\n`;
+        msg += `   Quantite: ${item.quantite} x ${formatPrice(item.price)}\n`;
         msg += `   Sous-total: ${formatPrice(subtotal)}\n\n`;
     });
     
-    msg += "══════════════════════════════\n";
-    msg += "💰 RÉSUMÉ:\n";
-    msg += "══════════════════════════════\n\n";
+    msg += "====================\n";
+    msg += "RESUME:\n";
+    msg += "====================\n\n";
     msg += `Total: ${formatPrice(total)}\n\n`;
     
-    msg += "📍 INFORMATIONS DE LIVRAISON:\n";
-    msg += "══════════════════════════════\n\n";
+    msg += "LIVRAISON:\n";
+    msg += "====================\n\n";
     msg += `Adresse: ${address}\n`;
     msg += `Code postal: ${postal}\n`;
-    msg += `Téléphone: ${phone}\n`;
-    msg += `Mode de livraison: ${method === 'postal' ? '📬 Envoi postal' : '💬 Livraison personnalisée'}\n\n`;
+    msg += `Telephone: ${phone}\n`;
+    msg += `Mode: ${method === 'postal' ? 'Envoi postal' : 'Livraison personnalisee'}\n\n`;
     
-    msg += "════════════════════════════════\n";
-    msg += "Merci pour votre commande! 🙏\n";
+    msg += "====================\n";
+    msg += "Merci pour votre commande!\n";
     
     closeDeliveryForm();
     panier = [];
@@ -1428,7 +1443,7 @@ deliveryForm.addEventListener("submit", (e) => {
     saveCart();
     
     window.open(`https://t.me/lineasfarmx?text=${encodeURIComponent(msg)}`, "_blank");
-    showToast("Commande envoyée! ✅");
+    showToast("Commande envoyee!");
 });
 
 document.addEventListener("keydown", (e) => {
@@ -1455,12 +1470,15 @@ function showPage(pageName) {
         document.getElementById("catalogPage")?.removeAttribute("hidden");
         document.getElementById("catalogPage2")?.removeAttribute("hidden");
         document.getElementById("navCatalog").classList.add("nav-active");
+        showToast("Catalogue");
     } else if (pageName === "canal") {
         document.getElementById("canalPage")?.removeAttribute("hidden");
         document.getElementById("navCanal").classList.add("nav-active");
+        showToast("Canal Telegram");
     } else if (pageName === "info") {
         document.getElementById("infoPage")?.removeAttribute("hidden");
         document.getElementById("navInfo").classList.add("nav-active");
+        showToast("A propos");
     }
 }
 
@@ -1474,6 +1492,7 @@ document.querySelectorAll(".nav-btn").forEach((btn) => {
 
 // Bouton rejoindre le canal
 document.getElementById("joinCanalBtn")?.addEventListener("click", () => {
+    showToast("Ouverture Telegram...");
     window.open("https://t.me/+h7Pp_99rpmszNDJk", "_blank");
 });
 
