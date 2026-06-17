@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=yes, maximum-scale=5"/>
+    <meta name="theme-color" content="#0a0a0a"/>
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+    <meta name="apple-mobile-web-app-title" content="LINEAS FARM"/>
+    <title>LINEAS FARM — Menu</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Roboto+Condensed:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+    <header class="header">
+        <div class="header-stars header-stars--left" aria-hidden="true">★ ★ ★ ★ ★</div>
+        <div class="header-stars header-stars--right" aria-hidden="true"></div>
+        <div class="logo-ring">
+            <img src="assets/liners_farm.png" alt="LINERS FARM" class="logo-img" id="logoImg" />
+        </div>
+        <p class="header-menu-label">MENU</p>
+        <div class="header-nav">
+            <button class="nav-btn nav-active" data-page="catalog" id="navCatalog">Catalogue</button>
+            <button class="nav-btn" data-page="canal" id="navCanal">Canal</button>
+            <button class="nav-btn" data-page="info" id="navInfo">Info</button>
+        </div>
+        <button class="header-cart" id="headerCart" aria-label="Ouvrir le panier">
+            <i class="fas fa-shopping-bag"></i>
+            <span class="cart-count" id="headerCartCount">0</span>
+        </button>
+    </header>
+
+    <!-- Suggestions (pas de barre de recherche) -->
+    <section class="suggestions" aria-label="Suggestions" id="catalogPage">
+        <h2 class="section-label">Suggestions</h2>
+        <div class="suggestions-scroll" id="suggestionsList"></div>
+    </section>
+
+    <main class="catalog-wrap" id="catalogPage2">
+        <h2 class="section-label" id="catalogTitle">Catalogue</h2>
+        <div class="catalog-grid" id="catalogGrid"></div>
+    </main>
+
+    <!-- Page Canal -->
+    <section class="page-section" id="canalPage" hidden>
+        <div class="canal-container">
+            <h2 class="canal-title">Notre Canal Telegram</h2>
+            <p class="canal-description">Rejoignez notre communauté pour les dernières mises à jour et exclusivités !</p>
+            <button class="btn-join-canal" id="joinCanalBtn">
+                <i class="fab fa-telegram"></i> Rejoindre le Canal
+            </button>
+        </div>
+    </section>
+
+    <!-- Page Info -->
+    <section class="page-section" id="infoPage" hidden>
+        <div class="info-container">
+            <h1 class="info-title">LINEAS FARM N1 - Livraison Europe</h1>
+            <div class="info-content">
+                <p>Chez <strong>LINEAS FARM</strong>, nous mettons l'innovation au service de nos clients. Nous avons développé un bot intelligent capable de répondre à vos questions en temps réel. Il vous informe sur nos produits, nos services, nos horaires et vous accompagne à chaque étape de votre démarche.</p>
+
+                <p>À la fois sophistiqué et simple d'utilisation, il est conçu pour vous guider de manière efficace et intuitive.</p>
+
+                <p>En complément, nous avons créé une mini-application qui vous permet de consulter notre catalogue de produits ainsi que des contenus visuels (photos et vidéos) afin de découvrir pleinement notre univers.</p>
+
+                <p>Grâce à nos partenaires et boutiques, notre présence s'étend sur plusieurs zones, permettant à nos clients de profiter de nos produits où qu'ils se trouvent.</p>
+
+                <p>Notre mission est claire : allier proximité, innovation et qualité de service, afin de vous offrir une expérience fluide, moderne et toujours à votre écoute.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Fiche produit (clic sur article) -->
+    <div class="overlay" id="productOverlay" hidden>
+        <article class="product-detail" role="dialog" aria-labelledby="detailName">
+            <button class="detail-close" id="closeProduct" aria-label="Fermer">
+                <i class="fas fa-times"></i>
+            </button>
+            <div class="detail-layout">
+                <div class="detail-image-wrap">
+                    <img id="detailImage" src="" alt="" />
+                    <video id="detailVideo" style="display: none; width: 100%; height: auto;" controls muted></video>
+                    <button id="toggleMediaBtn" class="toggle-media-btn" style="display: none;" title="Afficher la vidéo">
+                        <i class="fas fa-video"></i>
+                    </button>
+                </div>
+                <div class="detail-info">
+                    <div class="detail-brand" id="detailBrand"></div>
+                    <h2 class="detail-name" id="detailName"></h2>
+                    <p class="detail-strain" id="detailStrain"></p>
+                    <div class="detail-variants" id="detailVariants"></div>
+                    <p class="detail-hint" id="detailHint">Veuillez choisir un grammage pour pouvoir ajouter au panier.</p>
+                    <div class="detail-qty">
+                        <button type="button" class="qty-btn" id="detailQtyMinus">−</button>
+                        <span id="detailQty">1</span>
+                        <button type="button" class="qty-btn" id="detailQtyPlus">+</button>
+                    </div>
+                    <button type="button" class="btn-grammage" id="detailGrammageBtn" disabled>Choisir un grammage</button>
+                    <button type="button" class="btn-add-cart" id="detailAddCart" disabled>Ajouter au panier</button>
+                    <button type="button" class="btn-telegram" id="detailTelegram">
+                        <i class="fab fa-telegram"></i> Commander via Telegram
+                    </button>
+                </div>
+            </div>
+        </article>
+    </div>
+
+    <!-- Panier -->
+    <aside class="cart-sidebar" id="cartSidebar">
+        <div class="cart-header">
+            <h2><i class="fas fa-shopping-bag"></i> Panier</h2>
+            <button class="close-cart" id="closeCart" aria-label="Fermer"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="cart-items" id="cartItems">
+            <p class="empty-cart">Votre panier est vide</p>
+        </div>
+        <div class="cart-footer">
+            <div class="cart-total-row">
+                <span>Total</span>
+                <strong id="cartTotalPrice">0,00 €</strong>
+            </div>
+            <button class="checkout-btn" id="checkoutBtn">
+                <i class="fab fa-telegram"></i> Commander via Telegram
+            </button>
+        </div>
+    </aside>
+    <div class="cart-overlay" id="cartOverlay"></div>
+
+    <button class="floating-cart" id="floatingCart" aria-label="Panier">
+        <i class="fas fa-shopping-bag"></i>
+        <span class="floating-badge" id="floatingBadge">0</span>
+    </button>
+
+    <div class="toast" id="toast" role="status"></div>
+
+    <script type="module" src="app.js"></script>
+</body>
+</html>
